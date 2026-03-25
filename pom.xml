@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.2</version>
+		<version>4.0.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.harshkumar0614jain</groupId>
 	<artifactId>ems</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ems</name>
-	<description>This is an Employee Management System built using Java and Spring Boot with a REST API architecture. The system supports two roles - Employee and Admin - and manages core HR functionalities such as employee registration and login, profile management, password changes, attendance (clock-in/clock-out), and leaveRequest management. Employees can apply for leaves and track their profiles, while Admins can create, search, update, activate/deactivate employees, and approve or reject leaveRequest requests. The application ensures proper validations, role-based access, and clear status handling for a smooth and secure workforce management process.</description>
+	<description>This is an Employee Management System built using Java and Spring Boot with
+		a REST API architecture. The system supports two roles - Employee and
+		Admin - and manages core HR functionalities such as employee registration and login,
+		profile management, password changes, attendance (clock-in/clock-out),
+		and leaveRequest management. Employees can apply for leaves and track their profiles,
+		while Admins can create, search, update, activate/deactivate employees,
+		and approve or reject leaveRequest requests. The application ensures proper validations,
+		role-based access, and clear status handling for a smooth and secure workforce management
+		process.</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -30,43 +38,58 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+
+		<!-- Provides MongoDB support: MongoRepository, MongoTemplate, and auto-configuration -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
+
+		<!-- Enables bean validation using annotations like @NotNull, @Email, @Size on request DTOs -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+
+		<!-- Provides REST API support: DispatcherServlet, @RestController, @RequestMapping, embedded Tomcat -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- Provides authentication and authorization: @PreAuthorize, SecurityFilterChain, role-based access control for Employee and Admin roles -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- Provides test utilities for Spring Security: @WithMockUser, SecurityMockMvcConfigurers for testing secured endpoints -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Reduces boilerplate code: @Getter, @Setter, @Builder, @AllArgsConstructor, @NoArgsConstructor -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- Provides testing support: JUnit 5, Mockito, AssertJ, MockMvc for unit and integration tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb-test</artifactId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
+
+			<!-- Configures Lombok as an annotation processor so it generates code at compile time -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -79,6 +102,8 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+
+			<!-- Packages the application as an executable JAR; Lombok is excluded from the final build -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -91,6 +116,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
