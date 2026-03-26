@@ -24,7 +24,7 @@ public class User {
     private String id;
 
     @Indexed(unique = true)
-    private String userName;
+    private String username;
 
     private String password;
 

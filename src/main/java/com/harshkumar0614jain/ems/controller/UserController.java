@@ -60,5 +60,14 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-//  delete user api
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<ResponseModel<Void>> deleteUser(@PathVariable String userId){
+
+        userService.deleteUser(userId);
+        ResponseModel<Void>  response = new ResponseModel<>(
+                "User is deleted successfully",
+                null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

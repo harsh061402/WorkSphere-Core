@@ -119,4 +119,12 @@ public class GlobalExceptionHandler{
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ExceptionResponseModel> handleRuntimeException(RuntimeException e) {
+        Map<String,String> error = new HashMap<>();
+        error.put("Error",e.getMessage());
+        ExceptionResponseModel response = new ExceptionResponseModel(e.getMessage(),error);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

@@ -12,7 +12,7 @@ import java.util.Set;
 public class UserRequestModel {
 
     @NotBlank(message = "Username is required")
-    private String userName;
+    private String username;
 
     @NotBlank(message = "Password is required")
     private String password;
