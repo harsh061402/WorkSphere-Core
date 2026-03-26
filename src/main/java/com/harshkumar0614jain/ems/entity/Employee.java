@@ -1,6 +1,7 @@
 package com.harshkumar0614jain.ems.entity;
 
 import com.harshkumar0614jain.ems.enums.Department;
+import com.harshkumar0614jain.ems.enums.EmployeeStatus;
 import com.harshkumar0614jain.ems.enums.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -35,6 +36,8 @@ public class Employee {
 
     @Indexed(unique = true)
     private String mobileNumber;
+
+    private EmployeeStatus employeeStatus;
 
     private Department department;
 
