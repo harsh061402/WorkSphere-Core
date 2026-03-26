@@ -10,4 +10,10 @@ public interface LeaveRequestRepository extends MongoRepository<LeaveRequest,Str
 
     List<LeaveRequest> findByEmployeeId(String employeeId);
 
+//    List<LeaveRequest> findByEmployeeIdAndLeaveStatus(String employeeId, LeaveStatus status);
+//
+//    // Used to check for overlapping leave requests
+//    List<LeaveRequest> findByEmployeeIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+//            String employeeId, LocalDate endDate, LocalDate startDate);
+
 }
