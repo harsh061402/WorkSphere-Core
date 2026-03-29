@@ -27,10 +27,9 @@ public class GlobalExceptionHandler{
     }
 
     @ExceptionHandler(HttpMessageConversionException.class)
-    public ResponseEntity<ExceptionResponseModel> handle(HttpMessageConversionException ex) {
+    public ResponseEntity<ExceptionResponseModel> handleHttpMessageConversionException(HttpMessageConversionException ex) {
 
         Throwable cause = ex.getMostSpecificCause();
-        String message = cause.getMessage();
         Map<String,String> error = new HashMap<>();
         error.put("Exception Class: " , ex.getClass().getName());
         error.put("message","Invalid request body: " + ex.getMostSpecificCause().getMessage());
@@ -74,7 +73,7 @@ public class GlobalExceptionHandler{
         }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<ExceptionResponseModel> handleDuplicateKeyException(DuplicateKeyException e) {
+    public ResponseEntity<ExceptionResponseModel> handleDuplicateKeyException() {
 
         Map<String, String> error = new HashMap<>();
         error.put("message", "In the given data, constraint have duplicate key value");
@@ -123,7 +122,15 @@ public class GlobalExceptionHandler{
     public ResponseEntity<ExceptionResponseModel> handleRuntimeException(RuntimeException e) {
         Map<String,String> error = new HashMap<>();
         error.put("Error",e.getMessage());
-        ExceptionResponseModel response = new ExceptionResponseModel(e.getMessage(),error);
+        ExceptionResponseModel response = new ExceptionResponseModel("Request could not be processed",error);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ExceptionResponseModel> handleBusinessException(BusinessException e) {
+        Map<String,String> error = new HashMap<>();
+        error.put(e.getKey(),e.getMessage());
+        ExceptionResponseModel response = new ExceptionResponseModel("Business rule violation",error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

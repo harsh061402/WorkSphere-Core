@@ -9,5 +9,4 @@ import java.util.Map;
 public class ExceptionResponseModel {
     private String message;
     private Map<String,String> data;
-
 }
