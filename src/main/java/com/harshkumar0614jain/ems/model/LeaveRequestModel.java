@@ -1,6 +1,5 @@
 package com.harshkumar0614jain.ems.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.harshkumar0614jain.ems.enums.LeaveType;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
@@ -12,13 +11,13 @@ import java.time.LocalDate;
 
 @Data
 public class LeaveRequestModel {
-    @NotBlank(message = "Tittle is mandatory")
+    @NotBlank(message = "Title is mandatory")
     private String title;
 
     @NotBlank(message = "Description is mandatory")
     private String description;
 
-    @NotNull(message = "Employee Id is mandatory")
+    @NotBlank(message = "Employee Id is mandatory")
     private String employeeId;
 
     @NotNull(message = "Start Date is mandatory")
