@@ -5,6 +5,7 @@ import com.harshkumar0614jain.ems.model.UserUpdateRequestModel;
 import com.harshkumar0614jain.ems.model.UserRequestModel;
 import com.harshkumar0614jain.ems.model.UserResponseModel;
 import com.harshkumar0614jain.ems.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseModel<UserResponseModel>> createUser(@RequestBody UserRequestModel userRequest){
+    public ResponseEntity<ResponseModel<UserResponseModel>> createUser(@Valid @RequestBody UserRequestModel userRequest){
 
         UserResponseModel userCreated = userService.createUser(userRequest);
         ResponseModel<UserResponseModel>  response = new ResponseModel<>(
@@ -51,7 +52,7 @@ public class UserController {
 
     @PatchMapping("/update/{userId}")
     public ResponseEntity<ResponseModel<UserResponseModel>> updateUser(
-            @RequestBody UserUpdateRequestModel updateRequest,
+            @RequestBody @Valid UserUpdateRequestModel updateRequest,
             @PathVariable String userId){
 
         UserResponseModel userUpdated = userService.updateUser(updateRequest,userId);
