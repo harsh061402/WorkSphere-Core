@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 @Builder
 public class LeaveResponseModel {
     private String id;
-    private String tittle;
+    private String title;
     private String description;
     private String employeeId;
     private LocalDate startDate;
     private LocalDate endDate;
     private LeaveType leaveType;
     private LeaveStatus leaveStatus;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     private String managerComment;
 }
