@@ -1,5 +1,6 @@
 package com.harshkumar0614jain.ems.controller;
 
+import com.harshkumar0614jain.ems.enums.Department;
 import com.harshkumar0614jain.ems.model.EmployeeRequestModel;
 import com.harshkumar0614jain.ems.model.EmployeeResponseModel;
 import com.harshkumar0614jain.ems.model.EmployeeUpdateRequestModel;
@@ -13,18 +14,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/employee")
+@RequestMapping("/api/employees")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
 
     @PostMapping
-    public ResponseEntity<EmployeeResponseModel> createEmployee(
+    public ResponseEntity<ResponseModel<EmployeeResponseModel>> createEmployee(
             @Valid @RequestBody EmployeeRequestModel employeeRequest){
 
         EmployeeResponseModel employeeCreated = employeeService.createEmployee(employeeRequest);
-        return new ResponseEntity<>(employeeCreated, HttpStatus.CREATED);
+        ResponseModel<EmployeeResponseModel> response = new ResponseModel<>(
+                "Employee created successfully", employeeCreated);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -32,7 +35,7 @@ public class EmployeeController {
 
         List<EmployeeResponseModel> userList = employeeService.findAllEmployee();
         ResponseModel<List<EmployeeResponseModel>> response = new ResponseModel<>(
-                "List of Employees retrieved successfully ",userList);
+                "Employees retrieved successfully",userList);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -40,25 +43,27 @@ public class EmployeeController {
     public ResponseEntity<ResponseModel<EmployeeResponseModel>> getEmployeeById(@PathVariable String id){
         EmployeeResponseModel employee = employeeService.findByEmployeeId(id);
         ResponseModel<EmployeeResponseModel> response = new ResponseModel<>(
-                "Employee retrieved successfully ",employee);
+                "Employee retrieved successfully",employee);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PatchMapping("/update/{id}")
+
+    @PatchMapping("/{id}")
     public ResponseEntity<ResponseModel<EmployeeResponseModel>> updateEmployee(
             @PathVariable String id,
             @Valid @RequestBody EmployeeUpdateRequestModel employeeUpdateRequest){
 
         EmployeeResponseModel updatedEmployee = employeeService.updateEmployee(id,employeeUpdateRequest);
         ResponseModel<EmployeeResponseModel> response = new ResponseModel<>(
-                "Employee updated successfully ",updatedEmployee);
+                "Employee updated successfully",updatedEmployee);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseModel<Void>> deleteEmployee(@PathVariable String id){
         employeeService.deleteEmployee(id);
-        ResponseModel<Void> response = new ResponseModel<>("Employee deleted successfully ",null);
+        ResponseModel<Void> response = new ResponseModel<>(
+                "Employee deleted successfully",null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
