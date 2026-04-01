@@ -20,6 +20,6 @@ public class LeaveAllocationRequestModel {
     @Min(value = 1,message = "Total leaves must be at least 1")
     private int totalLeaves;
 
-    @NotNull(message = "Year is required")
+    @Min(value = 2025,message = "Year is required")
     private int year;
 }

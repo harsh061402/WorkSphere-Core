@@ -21,11 +21,11 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<ResponseModel<List<UserResponseModel>>> getAllUser(){
+    public ResponseEntity<ResponseModel<List<UserResponseModel>>> getAllUsers(){
 
         List<UserResponseModel> usersList = userService.getAllUsers();
         ResponseModel<List<UserResponseModel>> response = new ResponseModel<>(
-                "List of users", usersList);
+                "Users retrieved successfully", usersList);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

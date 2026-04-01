@@ -34,6 +34,7 @@ public class EmployeeService {
                 .lastName(employee.getLastName())
                 .gender(employee.getGender())
                 .mobileNumber(employee.getMobileNumber())
+                .employeeStatus(employee.getEmployeeStatus())
                 .department(employee.getDepartment())
                 .designation(employee.getDesignation())
                 .salary(employee.getSalary())

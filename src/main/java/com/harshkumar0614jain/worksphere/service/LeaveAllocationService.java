@@ -2,6 +2,7 @@ package com.harshkumar0614jain.worksphere.service;
 
 import com.harshkumar0614jain.worksphere.entity.LeaveAllocation;
 import com.harshkumar0614jain.worksphere.enums.LeaveType;
+import com.harshkumar0614jain.worksphere.exception.BusinessException;
 import com.harshkumar0614jain.worksphere.exception.ResourceAlreadyExistsException;
 import com.harshkumar0614jain.worksphere.exception.ResourceNotFoundException;
 import com.harshkumar0614jain.worksphere.model.LeaveAllocationRequestModel;
@@ -23,7 +24,7 @@ public class LeaveAllocationService {
     private EmployeeRepository employeeRepository;
 
     // Map Leave Allocation entity → response
-    public LeaveAllocationResponseModel mapToResponse (LeaveAllocation leaveAllocation){
+    private LeaveAllocationResponseModel mapToResponse (LeaveAllocation leaveAllocation){
         return LeaveAllocationResponseModel.builder()
                 .id(leaveAllocation.getId())
                 .employeeId(leaveAllocation.getEmployeeId())
@@ -93,7 +94,9 @@ public class LeaveAllocationService {
         LeaveAllocation leaveAllocation = getAllocationByEmployeeAndTypeAndYear(employeeId,leaveType,year);
 
         if(leaveAllocation.getRemainingLeaves() < days)
-            throw new RuntimeException("Not enough leave days");
+            throw new BusinessException("leaveBalance",
+                    "Insufficient leave balance. Remaining: " +
+                            leaveAllocation.getRemainingLeaves() + " days, Requested: " + days + " days");
 
         leaveAllocation.setUsedLeaves(leaveAllocation.getUsedLeaves()+days);
         leaveAllocationRepository.save(leaveAllocation);
@@ -104,7 +107,7 @@ public class LeaveAllocationService {
         LeaveAllocation leaveAllocation = getAllocationByEmployeeAndTypeAndYear(employeeId,leaveType,year);
 
         if(leaveAllocation.getUsedLeaves() < days)
-            throw new RuntimeException("Cannot restore " + days + " days. Employee has only used "
+            throw new BusinessException("leaveBalance","Cannot restore " + days + " days. Employee has only used "
                     + leaveAllocation.getUsedLeaves() + " days.");
 
         leaveAllocation.setUsedLeaves(leaveAllocation.getUsedLeaves()-days);

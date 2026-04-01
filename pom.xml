@@ -16,9 +16,9 @@
 		a REST API architecture. The system supports two roles - Employee and
 		Admin - and manages core HR functionalities such as employee registration and login,
 		profile management, password changes, attendance (clock-in/clock-out),
-		and leaveRequest management. Employees can apply for leaves and track their profiles,
+		and leave request management. Employees can apply for leaves and track their profiles,
 		while Admins can create, search, update, activate/deactivate employees,
-		and approve or reject leaveRequest requests. The application ensures proper validations,
+		and approve or reject leave request requests. The application ensures proper validations,
 		role-based access, and clear status handling for a smooth and secure workforce management
 		process.</description>
 	<url/>
