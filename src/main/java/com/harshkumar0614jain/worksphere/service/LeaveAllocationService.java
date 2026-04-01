@@ -81,7 +81,7 @@ public class LeaveAllocationService {
     }
 
 //    Get specific allocation use it inside deductLeave and restoreLeave to avoid code duplication
-    public LeaveAllocation getAllocationByEmployeeAndTypeAndYear(
+    private LeaveAllocation getAllocationByEmployeeAndTypeAndYear(
             String employeeId, LeaveType leaveType, int year){
 
         return leaveAllocationRepository.findByEmployeeIdAndLeaveTypeAndYear(employeeId,leaveType,year)
