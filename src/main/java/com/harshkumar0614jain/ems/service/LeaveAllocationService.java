@@ -79,7 +79,7 @@ public class LeaveAllocationService {
                 .toList();
     }
 
-//    Get specific allocation
+//    Get specific allocation use it inside deductLeave and restoreLeave to avoid code duplication
     public LeaveAllocation getAllocationByEmployeeAndTypeAndYear(
             String employeeId, LeaveType leaveType, int year){
 
@@ -90,10 +90,7 @@ public class LeaveAllocationService {
 
 //    Called when a leave Request is approved
     public void deductLeave(String employeeId, LeaveType leaveType, int year,int days){
-        LeaveAllocation leaveAllocation = leaveAllocationRepository.findByEmployeeIdAndLeaveTypeAndYear(
-                employeeId, leaveType,  year)
-                .orElseThrow(()-> new ResourceNotFoundException("leaveAllocation",
-                        "No allocation found with this leave type and year"));
+        LeaveAllocation leaveAllocation = getAllocationByEmployeeAndTypeAndYear(employeeId,leaveType,year);
 
         if(leaveAllocation.getRemainingLeaves() < days)
             throw new RuntimeException("Not enough leave days");
@@ -102,12 +99,9 @@ public class LeaveAllocationService {
         leaveAllocationRepository.save(leaveAllocation);
     }
 
-//    Called when a leave Request is canceled
+//    Called when a leave Request is cancelled
     public void restoreLeave (String employeeId, LeaveType leaveType, int year, int days){
-        LeaveAllocation leaveAllocation = leaveAllocationRepository.findByEmployeeIdAndLeaveTypeAndYear(
-                employeeId, leaveType, year)
-                .orElseThrow(()-> new ResourceNotFoundException("leaveAllocation",
-                        "No allocation found with this leave type and year"));
+        LeaveAllocation leaveAllocation = getAllocationByEmployeeAndTypeAndYear(employeeId,leaveType,year);
 
         if(leaveAllocation.getUsedLeaves() < days)
             throw new RuntimeException("Cannot restore " + days + " days. Employee has only used "
