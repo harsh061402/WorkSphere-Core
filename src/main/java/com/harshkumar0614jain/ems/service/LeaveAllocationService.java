@@ -79,7 +79,7 @@ public class LeaveAllocationService {
                 .toList();
     }
 
-//    Get specific allocation use it in the deductLeave and restoreLeave to avoid code duplication
+//    Get specific allocation
     public LeaveAllocation getAllocationByEmployeeAndTypeAndYear(
             String employeeId, LeaveType leaveType, int year){
 
@@ -90,7 +90,10 @@ public class LeaveAllocationService {
 
 //    Called when a leave Request is approved
     public void deductLeave(String employeeId, LeaveType leaveType, int year,int days){
-        LeaveAllocation leaveAllocation = getAllocationByEmployeeAndTypeAndYear(employeeId, leaveType, year);
+        LeaveAllocation leaveAllocation = leaveAllocationRepository.findByEmployeeIdAndLeaveTypeAndYear(
+                employeeId, leaveType,  year)
+                .orElseThrow(()-> new ResourceNotFoundException("leaveAllocation",
+                        "No allocation found with this leave type and year"));
 
         if(leaveAllocation.getRemainingLeaves() < days)
             throw new RuntimeException("Not enough leave days");
@@ -99,9 +102,12 @@ public class LeaveAllocationService {
         leaveAllocationRepository.save(leaveAllocation);
     }
 
-//    Called when a leave Request is cancelled
+//    Called when a leave Request is canceled
     public void restoreLeave (String employeeId, LeaveType leaveType, int year, int days){
-        LeaveAllocation leaveAllocation = getAllocationByEmployeeAndTypeAndYear(employeeId, leaveType, year);
+        LeaveAllocation leaveAllocation = leaveAllocationRepository.findByEmployeeIdAndLeaveTypeAndYear(
+                employeeId, leaveType, year)
+                .orElseThrow(()-> new ResourceNotFoundException("leaveAllocation",
+                        "No allocation found with this leave type and year"));
 
         if(leaveAllocation.getUsedLeaves() < days)
             throw new RuntimeException("Cannot restore " + days + " days. Employee has only used "
@@ -109,5 +115,8 @@ public class LeaveAllocationService {
 
         leaveAllocation.setUsedLeaves(leaveAllocation.getUsedLeaves()-days);
         leaveAllocationRepository.save(leaveAllocation);
+
     }
+
+
 }
