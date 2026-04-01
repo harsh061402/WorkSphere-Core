@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.harshkumar0614jain</groupId>
-	<artifactId>ems</artifactId>
+	<artifactId>worksphere-core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ems</name>
+	<name>WorkSphere-Core</name>
 	<description>This is an Employee Management System built using Java and Spring Boot with
 		a REST API architecture. The system supports two roles - Employee and
 		Admin - and manages core HR functionalities such as employee registration and login,

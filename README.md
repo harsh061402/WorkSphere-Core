@@ -1,4 +1,4 @@
-# EMS-Core — Employee Management System
+#  WorkSphere – Smart Employee Management System
 
 A production-grade REST API backend built with Spring Boot and MongoDB.
 
