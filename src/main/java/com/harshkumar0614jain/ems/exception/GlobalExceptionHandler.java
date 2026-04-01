@@ -18,69 +18,47 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler{
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponseModel> handleException(Exception e) {
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponseModel> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+
+        Throwable cause = e.getCause();
+        if (cause instanceof InvalidFormatException invalidFormatException) {
+
+            Class<?> targetType = invalidFormatException.getTargetType();
+
+            if (targetType.isEnum()) {
+                Object[] enumConstants = targetType.getEnumConstants();
+
+                String message = "Invalid value. Allowed values are: " +
+                        Arrays.toString(enumConstants);
+
+                // Enum name
+                String enumName = targetType.getSimpleName();
+
+                Map<String,String> error = new HashMap<>();
+                error.put(enumName, "Given Value is invalid");
+                ExceptionResponseModel response = new ExceptionResponseModel(message,error);
+
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        }
         Map<String,String> error = new HashMap<>();
-        error.put("Exception Class: " , e.getClass().getName());
-        ExceptionResponseModel response  = new ExceptionResponseModel("Something Went Wrong",error);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        error.put("message" , "Malformed JSON request");
+        ExceptionResponseModel response = new ExceptionResponseModel("Malformed JSON request",error);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
 
     @ExceptionHandler(HttpMessageConversionException.class)
     public ResponseEntity<ExceptionResponseModel> handleHttpMessageConversionException(HttpMessageConversionException ex) {
-
-        Throwable cause = ex.getMostSpecificCause();
         Map<String,String> error = new HashMap<>();
-        error.put("Exception Class: " , ex.getClass().getName());
+        error.put("exceptionClass:" , ex.getClass().getName());
         error.put("message","Invalid request body: " + ex.getMostSpecificCause().getMessage());
         ExceptionResponseModel  response  = new ExceptionResponseModel(
                 "Invalid request body",error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ExceptionResponseModel> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-
-            Throwable cause = e.getCause();
-
-            if (cause instanceof InvalidFormatException invalidFormatException) {
-
-                Class<?> targetType = invalidFormatException.getTargetType();
-
-                if (targetType.isEnum()) {
-
-                    Object[] enumConstants = targetType.getEnumConstants();
-
-                    String message = "Invalid value. Allowed values are: " +
-                            Arrays.toString(enumConstants);
-
-                    // Enum name
-                    String enumName = targetType.getSimpleName();
-
-                    Map<String,String> error = new HashMap<>();
-                    error.put(enumName, "Given Value is invalid");
-                    ExceptionResponseModel response = new ExceptionResponseModel(message,error);
-
-                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-                }
-            }
-            Map<String,String> error = new HashMap<>();
-            error.put("message " , "Malformed JSON request");
-            ExceptionResponseModel response = new ExceptionResponseModel("Malformed JSON request",error);
-
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-
-    @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<ExceptionResponseModel> handleDuplicateKeyException() {
-
-        Map<String, String> error = new HashMap<>();
-        error.put("message", "In the given data, constraint have duplicate key value");
-        ExceptionResponseModel response = new ExceptionResponseModel(
-                "Unique constraint violation",error);
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponseModel> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
@@ -89,17 +67,21 @@ public class GlobalExceptionHandler{
         e.getBindingResult().getFieldErrors().forEach(
                 error -> errors.put(error.getField(), error.getDefaultMessage()));
 
-        ExceptionResponseModel response = new ExceptionResponseModel("Validation is failed ",errors);
+        ExceptionResponseModel response = new ExceptionResponseModel("Validation failed",errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ExceptionResponseModel> handleIllegalArgumentException(IllegalArgumentException e) {
-        Map<String,String> error = new HashMap<>();
-        error.put("Error",e.getMessage() );
-        ExceptionResponseModel response = new ExceptionResponseModel(e.getMessage(),error);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<ExceptionResponseModel> handleDuplicateKeyException(DuplicateKeyException e) {
+
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "In the given data, constraint have duplicate key value");
+        ExceptionResponseModel response = new ExceptionResponseModel(
+                "Unique constraint violation",error);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
+
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ExceptionResponseModel> handleResourceNotFoundException(ResourceNotFoundException e) {
@@ -108,6 +90,7 @@ public class GlobalExceptionHandler{
         ExceptionResponseModel response = new ExceptionResponseModel("Data not found",error);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponseModel> handleResourceAlreadyExistsException(
@@ -118,20 +101,41 @@ public class GlobalExceptionHandler{
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ExceptionResponseModel> handleRuntimeException(RuntimeException e) {
-        Map<String,String> error = new HashMap<>();
-        error.put("Error",e.getMessage());
-        ExceptionResponseModel response = new ExceptionResponseModel("Request could not be processed",error);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ExceptionResponseModel> handleBusinessException(BusinessException e) {
         Map<String,String> error = new HashMap<>();
         error.put(e.getKey(),e.getMessage());
         ExceptionResponseModel response = new ExceptionResponseModel("Business rule violation",error);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponseModel> handleIllegalArgumentException(IllegalArgumentException e) {
+        Map<String,String> error = new HashMap<>();
+        error.put("error",e.getMessage() );
+        ExceptionResponseModel response = new ExceptionResponseModel(e.getMessage(),error);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ExceptionResponseModel> handleRuntimeException(RuntimeException e) {
+        Map<String,String> error = new HashMap<>();
+        error.put("error",e.getMessage());
+        ExceptionResponseModel response = new ExceptionResponseModel(
+                "Request could not be processed",error);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponseModel> handleException(Exception e) {
+        Map<String,String> error = new HashMap<>();
+        error.put("exceptionClass: " , e.getClass().getName());
+        ExceptionResponseModel response  = new ExceptionResponseModel(
+                "Something Went Wrong",error);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
