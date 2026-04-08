@@ -1,6 +1,7 @@
 package com.harshkumar0614jain.worksphere.controller;
 
 import com.harshkumar0614jain.worksphere.enums.Department;
+import com.harshkumar0614jain.worksphere.enums.EmployeeStatus;
 import com.harshkumar0614jain.worksphere.model.EmployeeRequestModel;
 import com.harshkumar0614jain.worksphere.model.EmployeeResponseModel;
 import com.harshkumar0614jain.worksphere.model.EmployeeUpdateRequestModel;
@@ -82,7 +83,24 @@ public class EmployeeController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "Search and filter employees")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employees retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid filter value")
+    })
+    @GetMapping("/search")
+    public ResponseEntity<ResponseModel<List<EmployeeResponseModel>>> getAllEmployeeBySearch(
+            @RequestParam (required = false)String searchText,
+            @RequestParam (required = false)Department department,
+            @RequestParam (required = false) EmployeeStatus employeeStatus
+    ){
 
+        List<EmployeeResponseModel> employeeList = employeeService.searchEmployees(
+                searchText, employeeStatus, department);
+        ResponseModel<List<EmployeeResponseModel>> response = new ResponseModel<>(
+                "Employees retrieved successfully",employeeList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @Operation(summary = "Update employee by ID")
     @ApiResponses(value = {

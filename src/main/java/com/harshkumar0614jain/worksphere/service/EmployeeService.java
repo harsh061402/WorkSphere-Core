@@ -14,9 +14,15 @@ import com.harshkumar0614jain.worksphere.model.EmployeeUpdateRequestModel;
 import com.harshkumar0614jain.worksphere.repository.EmployeeRepository;
 import com.harshkumar0614jain.worksphere.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class EmployeeService {
@@ -26,6 +32,9 @@ public class EmployeeService {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     private EmployeeResponseModel mapToEmployeeResponse(Employee employee){
         return EmployeeResponseModel.builder()
@@ -99,6 +108,61 @@ public class EmployeeService {
         Employee createdEmp = employeeRepo.save(employee);
 
         return mapToEmployeeResponse(createdEmp);
+    }
+
+
+    public List<EmployeeResponseModel> searchEmployees(
+            String searchText, EmployeeStatus employeeStatus,
+            Department department) {
+
+        List<Criteria> criteriaList = new ArrayList<>();
+
+        // Block DELETED explicitly
+        if(employeeStatus == EmployeeStatus.DELETED)
+            throw new BusinessException("employeeStatus",
+                    "Cannot filter by DELETED status");
+
+        // Apply filter only if provided
+        if (employeeStatus != null) {
+            criteriaList.add(
+                    Criteria.where("employeeStatus").is(employeeStatus)
+            );
+        } else {
+            criteriaList.add(
+                    Criteria.where("employeeStatus").ne(EmployeeStatus.DELETED)
+            );
+        }
+
+        if(department!=null)
+            criteriaList.add(
+                    Criteria.where("department").is(department)
+            );
+
+        if(StringUtils.hasText(searchText)) {
+            String safeSearch = Pattern.quote(searchText);
+
+            criteriaList.add(
+                    new Criteria().orOperator(
+                            Criteria.where("firstName").regex("^" + safeSearch, "i"),
+                            Criteria.where("lastName").regex("^" + safeSearch,"i"),
+                            Criteria.where("mobileNumber").regex("^" + safeSearch,"i"),
+                            Criteria.where("designation").regex("^" + safeSearch,"i")
+                    )
+            );
+        }
+
+        Query query = new Query();
+
+        query.addCriteria(
+                new Criteria().andOperator(
+                    criteriaList.toArray(new Criteria[0])
+                )
+        );
+
+        return mongoTemplate.find(query,Employee.class)
+                .stream()
+                .map(this::mapToEmployeeResponse)
+                .toList();
     }
 
 

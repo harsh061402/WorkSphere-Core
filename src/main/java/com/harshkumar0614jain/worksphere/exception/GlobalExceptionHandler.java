@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.util.Arrays;
@@ -48,12 +49,39 @@ public class GlobalExceptionHandler{
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ExceptionResponseModel> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException e) {
+
+        Map<String, String> error = new HashMap<>();
+        error.put("parameter", e.getName());
+        error.put("invalidValue", String.valueOf(e.getValue()));
+
+        Class<?> requiredType = e.getRequiredType();
+
+        error.put("expectedType",
+                requiredType != null ? requiredType.getSimpleName() : "Unknown");
+
+        if (requiredType != null && requiredType.isEnum()) {
+            Object[] constants = requiredType.getEnumConstants();
+            String enumName = requiredType.getSimpleName();
+
+            error.put(enumName,
+                    "Given value is invalid. Allowed values are: " + Arrays.toString(constants));
+        }
+
+        ExceptionResponseModel response = new ExceptionResponseModel(
+                "Invalid value for parameter " + e.getName(), error);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(HttpMessageConversionException.class)
     public ResponseEntity<ExceptionResponseModel> handleHttpMessageConversionException(HttpMessageConversionException ex) {
         Map<String,String> error = new HashMap<>();
         error.put("exceptionClass" , ex.getClass().getName());
         error.put("message","Invalid request body: " + ex.getMostSpecificCause().getMessage());
+
         ExceptionResponseModel  response  = new ExceptionResponseModel(
                 "Invalid request body",error);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
