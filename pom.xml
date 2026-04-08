@@ -77,6 +77,13 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>3.0.2</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- Provides testing support: JUnit 5, Mockito, AssertJ, MockMvc for unit and integration tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
