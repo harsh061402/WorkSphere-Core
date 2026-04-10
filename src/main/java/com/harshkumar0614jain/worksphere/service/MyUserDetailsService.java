@@ -22,7 +22,8 @@ public class MyUserDetailsService implements UserDetailsService {
     @NullMarked
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found: " + username));
 
         return org.springframework.security.core.userdetails.User
                 .builder()
@@ -31,7 +32,8 @@ public class MyUserDetailsService implements UserDetailsService {
                 .authorities(
                         user.getRoles()
                             .stream()
-                            .map(item ->new SimpleGrantedAuthority("ROLE_" + item.name()))
+                            .map(item ->
+                                    new SimpleGrantedAuthority("ROLE_" + item.name()))
                             .collect(Collectors.toList())
                 )
                 .build();
