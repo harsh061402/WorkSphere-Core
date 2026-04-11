@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class LeaveAllocationController {
             @ApiResponse(responseCode = "404", description = "Employee not found"),
             @ApiResponse(responseCode = "409", description = "Leave allocation already exists")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ResponseModel<LeaveAllocationResponseModel>> allocateLeaveEmployee(
             @RequestBody @Valid LeaveAllocationRequestModel requestModel){
@@ -45,6 +47,7 @@ public class LeaveAllocationController {
             @ApiResponse(responseCode = "200", description = "Leave allocations retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Employee not found")
     })
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @GetMapping("/{employeeId}")
     public ResponseEntity<ResponseModel<List<LeaveAllocationResponseModel>>> getAllAllocateLeaveByEmployeeId(
             @PathVariable String employeeId){

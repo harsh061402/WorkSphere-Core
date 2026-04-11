@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class LeaveRequestController {
             @ApiResponse(responseCode = "400", description = "Validation failed or insufficient balance"),
             @ApiResponse(responseCode = "404", description = "Employee not found")
     })
+    @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping
     public ResponseEntity<ResponseModel<LeaveResponseModel>> applyLeaveRequest(
             @Valid @RequestBody LeaveRequestModel requestModel){
@@ -48,6 +50,7 @@ public class LeaveRequestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All leave requests retrieved successfully")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ResponseModel<List<LeaveResponseModel>>> getAllLeaveRequests() {
 
@@ -66,6 +69,7 @@ public class LeaveRequestController {
             @ApiResponse(responseCode = "200", description = "Leave details retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Leave request not found")
     })
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @GetMapping("/{leaveRequestId}")
     public ResponseEntity<ResponseModel<LeaveResponseModel>> getLeaveRequestById(
             @PathVariable String leaveRequestId) {
@@ -83,6 +87,7 @@ public class LeaveRequestController {
             @ApiResponse(responseCode = "404", description = "Employee not found")
     })
     @GetMapping("/employee/{employeeId}")
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     public ResponseEntity<ResponseModel<List<LeaveResponseModel>>> getAllLeaveRequestsByEmployeeId(
             @PathVariable String employeeId) {
         List<LeaveResponseModel> allLeavesOfEmployee = leaveRequestService.findLeaveRequestByEmployeeId(employeeId);
@@ -97,6 +102,7 @@ public class LeaveRequestController {
             @ApiResponse(responseCode = "400", description = "Invalid status or missing comment"),
             @ApiResponse(responseCode = "404", description = "Leave request not found")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{leaveRequestId}/decision")
     public ResponseEntity<ResponseModel<LeaveResponseModel>> leaveRequestDecision(
             @PathVariable String leaveRequestId,
@@ -116,6 +122,7 @@ public class LeaveRequestController {
             @ApiResponse(responseCode = "400", description = "Cannot cancel rejected or already cancelled leave"),
             @ApiResponse(responseCode = "404", description = "Leave request not found")
     })
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @PatchMapping("/{leaveRequestId}/cancel")
     public ResponseEntity<ResponseModel<LeaveResponseModel>> cancelLeaveRequest(
             @PathVariable String leaveRequestId) {

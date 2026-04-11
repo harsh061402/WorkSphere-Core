@@ -15,10 +15,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@Tag(name = "Employee Management", description = "APTs for managing employees")
+@Tag(name = "Employee Management", description = "APIs for managing employees")
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -32,6 +33,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "400", description = "Validation failed"),
             @ApiResponse(responseCode = "409", description = "Employee already exists")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ResponseModel<EmployeeResponseModel>> createEmployee(
             @Valid @RequestBody EmployeeRequestModel employeeRequest){
@@ -46,6 +48,7 @@ public class EmployeeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Employees retrieved successfully")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<ResponseModel<List<EmployeeResponseModel>>> getEmployees(){
 
@@ -60,6 +63,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "Employee retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "Employee not found")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseModel<EmployeeResponseModel>> getEmployeeById(@PathVariable String id){
         EmployeeResponseModel employee = employeeService.findByEmployeeId(id);
@@ -73,6 +77,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "Employees retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid department value")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/department/{department}")
     public ResponseEntity<ResponseModel<List<EmployeeResponseModel>>> getByDepartment(
             @PathVariable Department department){
@@ -88,6 +93,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "Employees retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid filter value")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<ResponseModel<List<EmployeeResponseModel>>> getAllEmployeeBySearch(
             @RequestParam (required = false)String searchText,
@@ -108,6 +114,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found"),
             @ApiResponse(responseCode = "400", description = "Validation failed")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<ResponseModel<EmployeeResponseModel>> updateEmployee(
             @PathVariable String id,
@@ -124,6 +131,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "200", description = "Employee deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Employee not found")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseModel<Void>> deleteEmployee(@PathVariable String id){
         employeeService.deleteEmployee(id);
