@@ -1,6 +1,7 @@
 package com.harshkumar0614jain.worksphere.service;
 
 import com.harshkumar0614jain.worksphere.entity.User;
+import com.harshkumar0614jain.worksphere.enums.UserStatus;
 import com.harshkumar0614jain.worksphere.repository.UserRepository;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,10 @@ public class MyUserDetailsService implements UserDetailsService {
                 .builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .disabled(user.getStatus() == UserStatus.DELETED
+                            || user.getStatus() == UserStatus.INACTIVE
+                            ||user.getStatus() == UserStatus.PENDING)
+                .accountLocked(user.getStatus() ==  UserStatus.SUSPENDED)
                 .authorities(
                         user.getRoles()
                             .stream()
