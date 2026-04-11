@@ -4,11 +4,9 @@ import com.harshkumar0614jain.worksphere.enums.LeaveType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
 public class LeaveAllocationRequestModel {
 
     @NotBlank(message = "Employee Id is required")

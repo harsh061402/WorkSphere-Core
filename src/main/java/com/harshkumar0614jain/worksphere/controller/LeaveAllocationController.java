@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,10 +20,10 @@ import java.util.List;
 @Tag(name = "Leave Allocation Management", description = "APIs for managing leave allocations")
 @RestController
 @RequestMapping("/api/leave-allocations")
+@RequiredArgsConstructor
 public class LeaveAllocationController {
 
-    @Autowired
-    private LeaveAllocationService leaveAllocationService;
+    private final LeaveAllocationService leaveAllocationService;
 
     @Operation(summary = "Allocate leaves to an employee")
     @ApiResponses(value = {

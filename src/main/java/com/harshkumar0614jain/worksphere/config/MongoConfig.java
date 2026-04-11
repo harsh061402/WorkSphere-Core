@@ -3,22 +3,29 @@ package com.harshkumar0614jain.worksphere.config;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
+    @Value("${spring.data.mongodb.uri}")
+    private String mongoUri;
+
+    @Value("${spring.data.mongodb.database}")
+    private String databaseName;
+
     @Override
     @NonNull
     protected String getDatabaseName() {
-        return "worksphere";
+        return databaseName;
     }
 
     @Override
     @NonNull
     public MongoClient mongoClient() {
-        return MongoClients.create("mongodb://localhost:27017");
+        return MongoClients.create(mongoUri);
     }
 
     @Override

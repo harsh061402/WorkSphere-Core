@@ -9,19 +9,17 @@ import com.harshkumar0614jain.worksphere.model.LeaveAllocationRequestModel;
 import com.harshkumar0614jain.worksphere.model.LeaveAllocationResponseModel;
 import com.harshkumar0614jain.worksphere.repository.EmployeeRepository;
 import com.harshkumar0614jain.worksphere.repository.LeaveAllocationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class LeaveAllocationService {
 
-    @Autowired
-    private LeaveAllocationRepository leaveAllocationRepository;
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final LeaveAllocationRepository leaveAllocationRepository;
+    private final EmployeeRepository employeeRepository;
 
     // Map Leave Allocation entity → response
     private LeaveAllocationResponseModel mapToResponse (LeaveAllocation leaveAllocation){

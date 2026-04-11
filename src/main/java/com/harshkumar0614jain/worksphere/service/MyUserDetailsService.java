@@ -3,8 +3,8 @@ package com.harshkumar0614jain.worksphere.service;
 import com.harshkumar0614jain.worksphere.entity.User;
 import com.harshkumar0614jain.worksphere.enums.UserStatus;
 import com.harshkumar0614jain.worksphere.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NullMarked;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MyUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     @NullMarked

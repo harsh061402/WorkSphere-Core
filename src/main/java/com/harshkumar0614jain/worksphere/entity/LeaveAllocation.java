@@ -9,12 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Document(collection = "leave_allocations")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "leave_allocations")
 public class LeaveAllocation {
 
     @Id

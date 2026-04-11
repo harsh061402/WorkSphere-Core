@@ -13,7 +13,7 @@ import com.harshkumar0614jain.worksphere.model.EmployeeResponseModel;
 import com.harshkumar0614jain.worksphere.model.EmployeeUpdateRequestModel;
 import com.harshkumar0614jain.worksphere.repository.EmployeeRepository;
 import com.harshkumar0614jain.worksphere.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,16 +25,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepo;
-
-    @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final EmployeeRepository employeeRepo;
+    private final UserRepository userRepo;
+    private final MongoTemplate mongoTemplate;
 
     private EmployeeResponseModel mapToEmployeeResponse(Employee employee){
         return EmployeeResponseModel.builder()

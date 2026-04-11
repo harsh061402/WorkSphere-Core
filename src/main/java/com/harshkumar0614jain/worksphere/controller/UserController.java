@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,10 +21,10 @@ import java.util.List;
 @Tag(name = "User Management", description = "APIs for managing users")
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Operation(summary = "Get all users")
     @ApiResponses(value = {
@@ -63,7 +63,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Validation failed"),
             @ApiResponse(responseCode = "409", description = "User already exists")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ResponseModel<UserResponseModel>> createUser(@Valid @RequestBody UserRequestModel userRequest){
 

@@ -11,26 +11,20 @@ import com.harshkumar0614jain.worksphere.model.LeaveResponseModel;
 import com.harshkumar0614jain.worksphere.repository.EmployeeRepository;
 import com.harshkumar0614jain.worksphere.repository.LeaveAllocationRepository;
 import com.harshkumar0614jain.worksphere.repository.LeaveRequestRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class LeaveRequestService {
 
-    @Autowired
-    private LeaveRequestRepository leaveRequestRepository;
-
-    @Autowired
-    private LeaveAllocationRepository allocationRepository;
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private LeaveAllocationService leaveAllocationService;
+    private final LeaveRequestRepository leaveRequestRepository;
+    private final LeaveAllocationRepository allocationRepository;
+    private final EmployeeRepository employeeRepository;
+    private final LeaveAllocationService leaveAllocationService;
 
 
     private LeaveResponseModel mapToResponse(LeaveRequest leaveRequest) {

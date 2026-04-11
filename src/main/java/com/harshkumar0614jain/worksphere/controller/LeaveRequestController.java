@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,10 +21,10 @@ import java.util.List;
 @Tag(name = "Leave Request Management", description = "APIs for managing leave requests")
 @RestController
 @RequestMapping("/api/leave-requests")
+@RequiredArgsConstructor
 public class LeaveRequestController {
 
-    @Autowired
-    private LeaveRequestService leaveRequestService;
+    private final LeaveRequestService leaveRequestService;
 
     @Operation(summary = "Apply for a leave request")
     @ApiResponses(value = {

@@ -9,20 +9,18 @@ import com.harshkumar0614jain.worksphere.model.UserRequestModel;
 import com.harshkumar0614jain.worksphere.model.UserResponseModel;
 import com.harshkumar0614jain.worksphere.model.UserUpdateRequestModel;
 import com.harshkumar0614jain.worksphere.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     private UserResponseModel mapToResponse(User user) {
         return UserResponseModel.builder()
