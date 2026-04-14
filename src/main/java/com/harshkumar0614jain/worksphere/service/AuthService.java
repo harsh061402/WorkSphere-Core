@@ -9,6 +9,7 @@ import com.harshkumar0614jain.worksphere.model.LoginRequest;
 import com.harshkumar0614jain.worksphere.model.RegisterRequest;
 import com.harshkumar0614jain.worksphere.model.UserResponseModel;
 import com.harshkumar0614jain.worksphere.repository.UserRepository;
+import com.harshkumar0614jain.worksphere.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

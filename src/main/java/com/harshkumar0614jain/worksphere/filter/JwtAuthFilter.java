@@ -1,6 +1,6 @@
 package com.harshkumar0614jain.worksphere.filter;
 
-import com.harshkumar0614jain.worksphere.service.JwtService;
+import com.harshkumar0614jain.worksphere.util.JwtService;
 import com.harshkumar0614jain.worksphere.service.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
