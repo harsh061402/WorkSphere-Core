@@ -1,4 +1,4 @@
-package com.harshkumar0614jain.worksphere.service;
+package com.harshkumar0614jain.worksphere.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
