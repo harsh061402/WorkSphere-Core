@@ -1,5 +1,6 @@
 package com.harshkumar0614jain.worksphere.config;
 
+import com.harshkumar0614jain.worksphere.exception.AuthEntryPoint;
 import com.harshkumar0614jain.worksphere.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final AuthEntryPoint authEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,8 +45,7 @@ public class SecurityConfig {
                                         "/v3/api-docs/**",
                                         "/swagger-ui.html"
                                 ).permitAll()
-                                .anyRequest().permitAll()
-//                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()
                 )
                 // NO sessions — JWT is stateless
                 .sessionManagement(session -> session
@@ -53,6 +54,9 @@ public class SecurityConfig {
                 // Run JwtAuthFilter BEFORE Spring's default login filter
                 .addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class)
+
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authEntryPoint))
 
                 .cors(cors -> cors
                         .configurationSource(corsConfigurationSource())
