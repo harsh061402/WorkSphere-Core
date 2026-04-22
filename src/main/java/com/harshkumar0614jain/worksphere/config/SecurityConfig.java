@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                                 // Public endpoints — no token needed
-                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
 
                                 // Swagger — public for testing
                                 .requestMatchers(
