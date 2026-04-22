@@ -52,7 +52,7 @@ public class LeaveAllocationController {
     public ResponseEntity<ResponseModel<List<LeaveAllocationResponseModel>>> getAllAllocateLeaveByEmployeeId(
             @PathVariable String employeeId){
 
-        List<LeaveAllocationResponseModel> allAllocateLeave = leaveAllocationService.getAllocationByEmployee(employeeId);
+        List<LeaveAllocationResponseModel> allAllocateLeave = leaveAllocationService.getAllocationByEmployeeId(employeeId);
         ResponseModel<List<LeaveAllocationResponseModel>> response= new ResponseModel<>(
                 "Leave allocations retrieved successfully", allAllocateLeave);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -65,7 +65,7 @@ public class LeaveAllocationService {
     }
 
 //    Get all allocation for the employee
-    public List<LeaveAllocationResponseModel> getAllocationByEmployee(String employeeId){
+    public List<LeaveAllocationResponseModel> getAllocationByEmployeeId(String employeeId){
 
         //        Check Employee Exists
         if(!employeeRepository.existsById(employeeId))
