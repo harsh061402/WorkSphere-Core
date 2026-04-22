@@ -13,6 +13,7 @@ import com.harshkumar0614jain.worksphere.repository.LeaveAllocationRepository;
 import com.harshkumar0614jain.worksphere.repository.LeaveRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -105,7 +106,7 @@ public class LeaveRequestService {
         return mapToResponse(response);
     }
 
-
+    @Transactional
     public LeaveResponseModel approveOrRejectLeave(String leaveRequestId,
                                                    LeaveDecisionRequestModel requestModel) {
 //      Check leave exists
@@ -134,6 +135,7 @@ public class LeaveRequestService {
             long days = ChronoUnit.DAYS.between(
                     leaveRequest.getStartDate(),
                     leaveRequest.getEndDate()) + 1;
+
             leaveAllocationService.deductLeave(
                     leaveRequest.getEmployeeId(),
                     leaveRequest.getLeaveType(),
@@ -152,6 +154,7 @@ public class LeaveRequestService {
         return mapToResponse(leaveRequest);
     }
 
+    @Transactional
     public LeaveResponseModel cancelLeave(String leaveId){
 
 //      Check leave exists
@@ -163,7 +166,7 @@ public class LeaveRequestService {
         if(leaveRequest.getLeaveStatus()==LeaveStatus.REJECTED)
             throw new BusinessException("leaveStatus","Cannot cancel a rejected leave request");
 
-//      Already cancelled — can't cancel twice
+//      Already canceled — can't cancel twice
         if(leaveRequest.getLeaveStatus()==LeaveStatus.CANCELLED)
             throw new BusinessException("leaveStatus","Leave Status is already CANCELLED");
 
@@ -180,7 +183,7 @@ public class LeaveRequestService {
                     (int) days);
         }
 
-//      Set status to cancelled
+//      Set status to canceled
         leaveRequest.setLeaveStatus(LeaveStatus.CANCELLED);
         leaveRequestRepository.save(leaveRequest);
 
