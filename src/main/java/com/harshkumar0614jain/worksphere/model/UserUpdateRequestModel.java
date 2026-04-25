@@ -9,6 +9,8 @@ import java.util.Set;
 @Data
 public class UserUpdateRequestModel {
 
+    private String firstName;
+    private String lastName;
     private Set<Role> roles;
     private UserStatus status;
 }

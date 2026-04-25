@@ -6,6 +6,8 @@ import com.harshkumar0614jain.worksphere.enums.Gender;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class EmployeeRequestModel {
 
@@ -24,6 +26,10 @@ public class EmployeeRequestModel {
             message = "Invalid Indian mobile number"
     )
     private String mobileNumber;
+
+    @NotNull(message = "Date of birth is required")
+    @Past(message = "Date of birth must be in the past")
+    private LocalDate dateOfBrith;
 
     @NotNull(message = "Department is required")
     private Department department;

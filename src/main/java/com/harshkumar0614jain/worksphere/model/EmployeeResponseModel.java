@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -21,6 +22,8 @@ public class EmployeeResponseModel {
     private Gender gender;
     private String mobileNumber;
     private EmployeeStatus employeeStatus;
+    private String email;
+    private LocalDate dateOfBirth;
     private Department department;
     private String designation;
     private Long salary;
