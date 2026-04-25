@@ -2,6 +2,7 @@ package com.harshkumar0614jain.worksphere.service;
 
 import com.harshkumar0614jain.worksphere.entity.Address;
 import com.harshkumar0614jain.worksphere.entity.Employee;
+import com.harshkumar0614jain.worksphere.entity.User;
 import com.harshkumar0614jain.worksphere.enums.Department;
 import com.harshkumar0614jain.worksphere.enums.EmployeeStatus;
 import com.harshkumar0614jain.worksphere.exception.BusinessException;
@@ -39,6 +40,8 @@ public class EmployeeService {
                 .lastName(employee.getLastName())
                 .gender(employee.getGender())
                 .mobileNumber(employee.getMobileNumber())
+                .email(employee.getEmail())
+                .dateOfBirth(employee.getDateOfBirth())
                 .employeeStatus(employee.getEmployeeStatus())
                 .department(employee.getDepartment())
                 .designation(employee.getDesignation())
@@ -85,11 +88,17 @@ public class EmployeeService {
         if(employeeRepo.existsByMobileNumber(employeeRequest.getMobileNumber()))
             throw new ResourceAlreadyExistsException("mobileNumber","Mobile Number already exists");
 
+        User user = userRepo.findById(employeeRequest.getUserId())
+                .orElseThrow(()->new ResourceNotFoundException(
+                        "userId","User not found with id :- "+ employeeRequest.getUserId()));
+
         Employee employee = Employee.builder()
                 .firstName(employeeRequest.getFirstName())
                 .lastName(employeeRequest.getLastName())
                 .gender(employeeRequest.getGender())
                 .mobileNumber(employeeRequest.getMobileNumber())
+                .email(user.getEmail())
+                .dateOfBirth(employeeRequest.getDateOfBrith())
                 .employeeStatus(EmployeeStatus.ACTIVE)
                 .department(employeeRequest.getDepartment())
                 .designation(employeeRequest.getDesignation())
@@ -190,6 +199,9 @@ public class EmployeeService {
 
         if(updateRequest.getDepartment() != null)
             employee.setDepartment(updateRequest.getDepartment());
+
+        if(updateRequest.getDateOfBirth() != null)
+            employee.setDateOfBirth(updateRequest.getDateOfBirth());
 
         if(updateRequest.getDesignation() != null)
             employee.setDesignation(updateRequest.getDesignation());

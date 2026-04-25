@@ -6,6 +6,7 @@ import com.harshkumar0614jain.worksphere.enums.EmployeeStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository extends MongoRepository<Employee, String> {
 
@@ -16,4 +17,6 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
     List<Employee> findByDepartmentAndEmployeeStatusNot(Department department, EmployeeStatus status);
 
     List<Employee> findByEmployeeStatusNot(EmployeeStatus status);
+
+    Optional<Employee> findByUserId(String userId);
 }

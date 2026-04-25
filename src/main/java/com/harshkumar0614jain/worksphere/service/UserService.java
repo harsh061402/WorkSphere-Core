@@ -8,10 +8,12 @@ import com.harshkumar0614jain.worksphere.exception.ResourceNotFoundException;
 import com.harshkumar0614jain.worksphere.model.UserRequestModel;
 import com.harshkumar0614jain.worksphere.model.UserResponseModel;
 import com.harshkumar0614jain.worksphere.model.UserUpdateRequestModel;
+import com.harshkumar0614jain.worksphere.repository.EmployeeRepository;
 import com.harshkumar0614jain.worksphere.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,10 +23,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final EmployeeRepository employeeRepository;
 
     private UserResponseModel mapToResponse(User user) {
         return UserResponseModel.builder()
                 .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .roles(user.getRoles())
@@ -60,6 +65,8 @@ public class UserService {
             throw new BusinessException("roles","User must have at least one role");
 
         User user = User.builder()
+                .firstName(requestModel.getFirstName())
+                .lastName(requestModel.getLastName())
                 .username(requestModel.getUsername())
                 .password(passwordEncoder.encode(requestModel.getPassword()))
                 .email(requestModel.getEmail())
@@ -72,7 +79,7 @@ public class UserService {
         return mapToResponse(response);
     }
 
-
+    @Transactional
     public UserResponseModel updateUser(
             UserUpdateRequestModel updateRequest, String userId) {
 
@@ -87,9 +94,31 @@ public class UserService {
 
         if(updateRequest.getRoles()!= null){
             if(updateRequest.getRoles().isEmpty())
-                throw new BusinessException("roles","User must have at least one role");
+                throw new BusinessException("roles",
+                        "User must have at least one role");
 
             user.setRoles(updateRequest.getRoles());
+        }
+
+        if(updateRequest.getFirstName() != null)
+            user.setFirstName(updateRequest.getFirstName());
+
+        if(updateRequest.getLastName() != null)
+            user.setLastName(updateRequest.getLastName());
+
+        if(updateRequest.getFirstName() != null
+                || updateRequest.getLastName() != null){
+
+            employeeRepository.findByUserId(userId)
+                    .ifPresent(employee ->
+                    {
+                        if(updateRequest.getFirstName() != null)
+                            employee.setFirstName(updateRequest.getFirstName());
+
+                        if(updateRequest.getLastName() != null)
+                            employee.setLastName(updateRequest.getLastName());
+                        employeeRepository.save(employee);
+                    });
         }
 
         if(updateRequest.getStatus()!= null)
