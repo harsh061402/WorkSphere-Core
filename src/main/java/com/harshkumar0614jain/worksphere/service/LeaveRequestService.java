@@ -1,5 +1,6 @@
 package com.harshkumar0614jain.worksphere.service;
 
+import com.harshkumar0614jain.worksphere.entity.Employee;
 import com.harshkumar0614jain.worksphere.entity.LeaveAllocation;
 import com.harshkumar0614jain.worksphere.entity.LeaveRequest;
 import com.harshkumar0614jain.worksphere.enums.LeaveStatus;
@@ -26,6 +27,7 @@ public class LeaveRequestService {
     private final LeaveAllocationRepository allocationRepository;
     private final EmployeeRepository employeeRepository;
     private final LeaveAllocationService leaveAllocationService;
+    private final EmailService emailService;
 
 
     private LeaveResponseModel mapToResponse(LeaveRequest leaveRequest) {
@@ -148,10 +150,29 @@ public class LeaveRequestService {
         if (requestModel.getManagerComment() != null)
             leaveRequest.setManagerComment(requestModel.getManagerComment());
 
+        Employee employee = employeeRepository.findById(leaveRequest.getEmployeeId())
+                .orElseThrow(()-> new ResourceNotFoundException("employeeId",
+                        "Employee not found with id :- " + leaveRequest.getEmployeeId()));
 
         leaveRequestRepository.save(leaveRequest);
 
-        return mapToResponse(leaveRequest);
+
+        if(requestModel.getLeaveStatus() == LeaveStatus.APPROVED) {
+            emailService.sendEmail(
+                    employee.getEmail(),
+                    "Leave Request Approved",
+                    "Your leave request from " + leaveRequest.getStartDate() +
+                            " to " + leaveRequest.getEndDate() + " has been approved."
+            );
+        } else if(requestModel.getLeaveStatus() == LeaveStatus.REJECTED) {
+            emailService.sendEmail(
+                    employee.getEmail(),
+                    "Leave Request Rejected",
+                    "Your leave request has been rejected. " +
+                            "Manager comment: " + requestModel.getManagerComment()
+            );
+        }
+            return mapToResponse(leaveRequest);
     }
 
     @Transactional
