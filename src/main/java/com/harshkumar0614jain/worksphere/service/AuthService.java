@@ -4,6 +4,7 @@ import com.harshkumar0614jain.worksphere.entity.User;
 import com.harshkumar0614jain.worksphere.enums.Role;
 import com.harshkumar0614jain.worksphere.enums.UserStatus;
 import com.harshkumar0614jain.worksphere.exception.ResourceAlreadyExistsException;
+import com.harshkumar0614jain.worksphere.exception.ResourceNotFoundException;
 import com.harshkumar0614jain.worksphere.model.AuthResponse;
 import com.harshkumar0614jain.worksphere.model.LoginRequest;
 import com.harshkumar0614jain.worksphere.model.RegisterRequest;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Set;
 
 @Service
@@ -60,9 +62,17 @@ public class AuthService {
                 )
         );
 
+//        Update Last login
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(()->
+                        new ResourceNotFoundException("username",
+                                "User is not found with this username:- " + request.getUsername()));
+
+        user.setLastLoginDate(Instant.now());
+        userRepository.save(user);
+
 //        Generate Token
         String token = jwtService.generateToken(request.getUsername());
-
         return new  AuthResponse(token);
     }
 
