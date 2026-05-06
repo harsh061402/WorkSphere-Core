@@ -11,10 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Authentication", description = "APIs for authentication")
 @RestController
@@ -79,10 +76,9 @@ public class AuthController {
     @PostMapping("/reset-password")
     public ResponseEntity<ResponseModel<Void>> resetPassword(
             @Valid @RequestBody ResetPasswordRequest request){
-
         passwordResetService.resetPassword(request);
         ResponseModel<Void> response = new ResponseModel<>(
-                " New password is saved successfully ",null);
+                " Password updated successfully ",null);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }
