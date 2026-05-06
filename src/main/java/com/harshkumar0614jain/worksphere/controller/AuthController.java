@@ -2,6 +2,7 @@ package com.harshkumar0614jain.worksphere.controller;
 
 import com.harshkumar0614jain.worksphere.model.*;
 import com.harshkumar0614jain.worksphere.service.AuthService;
+import com.harshkumar0614jain.worksphere.service.PasswordResetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordResetService passwordResetService;
 
     @Operation(summary = "Register as an employee")
     @ApiResponses(value = {
@@ -51,5 +53,36 @@ public class AuthController {
         ResponseModel<AuthResponse> response = new ResponseModel<>(
                 "Login successful", result);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Send password reset link to email")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reset link sent successfully"),
+            @ApiResponse(responseCode = "404", description = "Email not found")
+    })
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ResponseModel<Void>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request){
+
+        passwordResetService.forgotPassword(request);
+        ResponseModel<Void> response = new ResponseModel<>(
+                "Reset link is send by the given email",null);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Reset password using token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Password reset successfully"),
+            @ApiResponse(responseCode = "400", description = "Token expired or already used"),
+            @ApiResponse(responseCode = "404", description = "Invalid token")
+    })
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResponseModel<Void>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request){
+
+        passwordResetService.resetPassword(request);
+        ResponseModel<Void> response = new ResponseModel<>(
+                " New password is saved successfully ",null);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }
